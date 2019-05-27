@@ -1,0 +1,32 @@
+.container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
+  background-color: #EBF1F5;
+  border-radius: 4px;
+  box-shadow: 0 0 0 0 rgba(19,124,189,0);
+  height: fit-content;
+}
+
+.positionForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.timeSetting {
+  display: flex;
+  flex-direction: row;
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.positionInput {
+  width: 5em;
+  margin-right: 2em;
+}

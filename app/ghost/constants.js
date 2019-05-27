@@ -1,0 +1,11 @@
+/**
+ * Some constants to define the action types
+ */
+
+export const GHOST_CONNECT = 'GHOST_CONNECT';
+export const GHOST_CONNECTED = 'GHOST_CONNECTED';
+export const GHOST_CONNECT_FAILED = 'GHOST_CONNECT_FAILED';
+export const GHOST_REQUEST_FAILED = 'GHOST_REQUEST_FAILED';
+export const GHOST_CONNECT_CLOSE = 'GHOST_CONNECT_CLOSE';
+export const GHOST_SEND_REQUEST = 'GHOST_SEND_REQUEST';
+export const GHOST_RESPONSE_RECEIVED = 'GHOST_RESPONSE_RECEIVED';

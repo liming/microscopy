@@ -1,0 +1,11 @@
+{
+  "width": "Width",
+  "frequency": "Frequency",
+  "calibration": "Calibration",
+  "startobserve": "Start Observation",
+  "stopobserve": "Stop Observation",
+  "startacquisition": "Start Acquisition",
+  "stopacquisition": "Stop Acquisition",
+  "clear": "Clear Spectrum",
+  "save": "Save Spectrum"
+}
