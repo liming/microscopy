@@ -1,20 +1,30 @@
-const fs = require('fs');
+import config from '../constants/config'
+import { getData } from '../ghost/actionCreator';
 
 export const START_OBSERVATION = 'START_OBSERVATION';
 export const STOP_OBSERVATION = 'STOP_OBSERVATION';
 export const START_ACQUISITION = 'START_ACQUISITION';
 export const STOP_ACQUISITION = 'STOP_ACQUISITION';
 
-export function startObservation() {
-  const data = new Uint8Array(Buffer.from('Hello Node.js'));
-  fs.writeFileSync('./test.txt', data);
+let timer = null;
 
-  return {
+export const startObservation = () => (dispatch) => {
+  clearInterval(timer);
+
+  timer = setInterval(() => {
+    dispatch(getData());
+  }, config.OBSERVE_TIME);
+
+  dispatch(getData());
+
+  dispatch({
     type: START_OBSERVATION
-  };
+  });
 }
 
 export function stopObservation() {
+  clearInterval(timer);
+
   return {
     type: STOP_OBSERVATION
   };

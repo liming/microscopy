@@ -35,7 +35,7 @@ const ghostMiddleware = () => {
       connection.on('ready', () => {
 
         setInterval(() => {
-          connection.send('STATUS\r\n', err => {
+          connection.send('STATUS\r\n', (err, res) => {
             if (err) {
               return store.dispatch({
                 type: GHOST_REQUEST_FAILED,

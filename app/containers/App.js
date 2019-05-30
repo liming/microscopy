@@ -36,7 +36,7 @@ class App extends React.Component<Props> {
     if (loading) return null;
 
     if (error && type === errorTypes.QUIT) {
-      return remote.dialog.showMessageBox({
+      remote.dialog.showMessageBox({
         type: 'error',
         message: error.message
       }, () => {

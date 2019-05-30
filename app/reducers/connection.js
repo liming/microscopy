@@ -16,6 +16,10 @@ const connection = (state = {}, action) => {
       return Object.assign({}, state, {
         type: errorTypes.QUIT, error: action.error
       });
+    case GHOST_RESPONSE_RECEIVED:
+      return Object.assign({}, state, {
+        data: action.payload
+      });
     default:
       return state;
   }
