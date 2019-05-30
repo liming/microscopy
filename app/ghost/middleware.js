@@ -20,7 +20,8 @@ const params = {
   port: 4000,
   shellPrompt: 'GHOST>',
   stripShellPrompt: true,
-  timeout: 10000
+  timeout: 10000,
+  sendTimeout: 5000
 };
 
 const ghostMiddleware = () => {
@@ -28,51 +29,57 @@ const ghostMiddleware = () => {
 
   return store => {
 
-    // create telnet connection from ghost
-    const setupConnection = () => {
-      connection.connect(params);
+    const keepGhostAlive = async () => {
+      const timer = setInterval(async () => {
+        try {
+          const status = await connection.send('STATUS\r\n');
+          console.log('Ghost status is: ', status);
+        } catch (error) {
+          clearInterval(timer);
 
-      connection.on('ready', () => {
+          console.error('Ghost connection failed: ', error);
 
-        setInterval(() => {
-          connection.send('STATUS\r\n', (err, res) => {
-            if (err) {
-              return store.dispatch({
-                type: GHOST_REQUEST_FAILED,
-                error: err
-              });
-            }
+          store.dispatch({
+            error,
+            type: GHOST_CONNECT_FAILED
           });
-        }, 5000);
+        }
+      }, 5000);
+    };
+
+    const sendRequest = async (command) => {
+      try {
+        const result = await connection.send(`${command}\r\n`);
+        console.log(result);
+
+        store.dispatch({
+          type: GHOST_RESPONSE_RECEIVED,
+          payload: result
+        });
+      } catch (error) {
+        store.dispatch({
+          error,
+          type: GHOST_REQUEST_FAILED,
+        });
+      }
+    }
+
+    // create telnet connection from ghost
+    const setupConnection = async () => {
+      try {
+        await connection.connect(params);
 
         store.dispatch({
           type: GHOST_CONNECTED
         });
-      });
 
-      connection.on('timeout', () => {
+        keepGhostAlive();
+      } catch (error) {
         store.dispatch({
-          type: GHOST_CONNECT_FAILED,
-          error: new Error('Ghost connection timeout')
+          error,
+          type: GHOST_CONNECT_FAILED
         });
-
-        connection.end();
-      });
-
-      connection.on('error', err => {
-        store.dispatch({
-          type: GHOST_CONNECT_FAILED,
-          error: err
-        });
-
-        connection.end();
-      });
-
-      connection.on('close', () => {
-        store.dispatch({
-          type: GHOST_CONNECT_CLOSE
-        });
-      });
+      }
     };
 
     return next => action => {
@@ -81,19 +88,7 @@ const ghostMiddleware = () => {
           setupConnection();
           break;
         case GHOST_SEND_REQUEST:
-          connection.send(`${action.command}\r\n`, (err, result) => {
-            if (err) {
-              return store.dispatch({
-                type: GHOST_REQUEST_FAILED,
-                error: err
-              });
-            }
-
-            store.dispatch({
-              type: GHOST_RESPONSE_RECEIVED,
-              payload: result
-            });
-          });
+          sendRequest(action.command);
           break;
         default:
           break;
